@@ -3,6 +3,7 @@ package userinterface;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -13,7 +14,7 @@ public class UI {
 
 	public static void displayMenu()
 	{
-		System.out.println("FileMng by Bogdan Balas");
+		System.out.println("LockedMe.com by Bogdan Balas");
 		System.out.println("Main Menu");
 		System.out.println("Choose one of the options");
 		System.out.println("1. Display All Files");
@@ -79,7 +80,7 @@ public class UI {
 				}
 				break;
 			case 3:
-				System.out.println("Exiting FileMng");
+				System.out.println("Exiting LockedMe.com");
 				main = false;
 				break;
 
@@ -92,6 +93,7 @@ public class UI {
 	
 
 	private static void SearchFile(String srchfile) {
+		
 		boolean found = false;
 		String path =  System.getProperty("user.dir");
 		File files = new File(path);
@@ -140,6 +142,7 @@ public class UI {
 		List<String> list = new ArrayList<>();
 		for (File f:files.listFiles())
 				list.add(f.getName());
+		Collections.sort(list);
 		for(int i=0; i<list.size(); i++)
 			System.out.println(list.get(i));
 		System.out.println();
