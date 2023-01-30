@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
+import exception.EmptyFolderException;
+import exception.FileNotFoundException;
 
 public class UI {
 	
@@ -41,7 +43,11 @@ public class UI {
 			int choice = sc.nextInt();
 			switch(choice) {
 			case 1:
-				GetFiles();
+				try{
+					GetFiles();
+				} catch(EmptyFolderException e) {
+					e.printStackTrace();
+				}
 				System.out.println();
 				break;
 			case 2: 
@@ -61,14 +67,22 @@ public class UI {
 						System.out.println("Enter the file name to delete");
 						String delfile = sc.next();
 						sc.nextLine();
-						DelFile(delfile);						
+						try{
+							DelFile(delfile);						
+						} catch(FileNotFoundException e) {
+							e.printStackTrace();
+						}
 						System.out.println();
 						break;
 					case 3:
 						System.out.println("Enter the file name to seach for");
 						String srchfile = sc.next();
 						sc.nextLine();
+						try {
 						SearchFile(srchfile);
+						} catch(FileNotFoundException e) {
+							e.printStackTrace();
+						}
 						System.out.println();
 						break;
 					case 4:
@@ -92,7 +106,7 @@ public class UI {
 
 	
 
-	private static void SearchFile(String srchfile) {
+	private static void SearchFile(String srchfile) throws FileNotFoundException{
 		
 		boolean found = false;
 		String path =  System.getProperty("user.dir");
@@ -108,18 +122,19 @@ public class UI {
 		if (found)
 			System.out.println("file found");
 		else
-			System.out.println("FNF");
+			throw new FileNotFoundException("File not found");
 	}
 	
 
-	private static void DelFile(String delfile) {
+	private static void DelFile(String delfile) throws FileNotFoundException{
 		String path =  System.getProperty("user.dir");
 		File file = new File(path, delfile);
-		if(file.delete())
-			System.out.println("File deleted successfully");
-		else
-			System.out.println("File not found in working directory");
+			if(file.delete())
+				System.out.println("File deleted successfully");
+			else
+				throw new FileNotFoundException("File not found in working directory");
 	}
+	
 
 	private static void AddFile(String addfile) {
 		String path =  System.getProperty("user.dir");
@@ -135,16 +150,19 @@ public class UI {
 		}
 	}
 
-	private static void GetFiles() {
+	private static void GetFiles() throws EmptyFolderException {
 		System.out.println("Files in current directory:");
 		String path =  System.getProperty("user.dir");
 		File files = new File(path);
 		List<String> list = new ArrayList<>();
 		for (File f:files.listFiles())
 				list.add(f.getName());
-		Collections.sort(list);
-		for(int i=0; i<list.size(); i++)
-			System.out.println(list.get(i));
-		System.out.println();
+		if (list.size()==0)
+			throw new EmptyFolderException("The current working directory is empty");
+		else
+			Collections.sort(list);
+			for(int i=0; i<list.size(); i++)
+				System.out.println(list.get(i));
+			System.out.println();
 	}
 }
